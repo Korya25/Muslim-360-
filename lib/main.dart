@@ -3,7 +3,7 @@ import 'package:muslim360/core/constants/app_constants.dart';
 
 import 'core/di/service_locator.dart';
 import 'core/routing/app_router.dart';
-import 'core/theme/app_theme.dart';
+import 'core/theme/style/app_theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
