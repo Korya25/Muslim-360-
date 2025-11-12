@@ -9,7 +9,10 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   setupLocator();
 
-  runApp(MuslimApp());
+  runApp(
+    // DevicePreview(builder: (context) => MuslimApp()),
+    MuslimApp(),
+  );
 }
 
 class MuslimApp extends StatelessWidget {
@@ -18,6 +21,7 @@ class MuslimApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       title: AppConstants.appName,
       theme: AppTheme.darkTheme,
       themeMode: ThemeMode.dark,
