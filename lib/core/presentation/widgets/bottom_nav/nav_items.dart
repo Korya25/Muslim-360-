@@ -5,16 +5,26 @@ import 'package:muslim360/core/routing/app_routes.dart';
 
 class NavItems {
   static final List<NavItemModel> items = [
-    NavItemModel(icon: Icons.home, route: AppRoutes.home),
+    NavItemModel(icon: Icons.home, route: AppRoutes.home, title: 'الرئسية'),
     const NavItemModel(
       icon: FlutterIslamicIcons.solidPrayingPerson,
       route: AppRoutes.prayer,
+      title: 'الصلاة',
     ),
     const NavItemModel(
       icon: FlutterIslamicIcons.solidQuran,
       route: AppRoutes.quran,
+      title: 'القرآن',
     ),
-    NavItemModel(icon: FlutterIslamicIcons.solidPrayer, route: AppRoutes.azkar),
-    const NavItemModel(icon: Icons.more_horiz, route: AppRoutes.more),
+    NavItemModel(
+      icon: FlutterIslamicIcons.solidPrayer,
+      route: AppRoutes.azkar,
+      title: 'الأذكار',
+    ),
+    const NavItemModel(
+      icon: Icons.more_horiz,
+      route: AppRoutes.more,
+      title: 'المذيد',
+    ),
   ];
 }

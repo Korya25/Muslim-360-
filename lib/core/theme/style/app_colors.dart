@@ -1,16 +1,30 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 class AppColors {
   const AppColors._();
+  // Scaffold background
+  static const scaffoldBackground = Color(0xFF0F0F0F);
+
+  // Common Colors
+  static const primaryGreen = Color(0xFF35A306);
+  static const white = Color(0xFFFFFFFF);
+  static const grey = Colors.grey;
+
+  // Text
+  static const textWhite = white;
+  static const textGrey = grey;
+
+  // Icons
+  static const iconWhite = white;
+  static const iconGrey = grey;
 
   // Nav Bar
   static const bottomNavBarBackground = Color(0xFF1A1A1A);
-  static const bottomNavBarSelected = Color(0xFF35A306);
-  static const bottomNavBarSelectedIcon = Colors.black;
-  static const bottomNavBarUnselectedIcon = Colors.white;
-  static Color bottomNavBarBorder = Colors.grey.withAlpha(51);
-  static Color bottomNavBarShadow = Colors.black.withAlpha(77);
-
-  // Scaffold background
-  static const scaffoldBackground = Color(0xFF0F0F0F);
+  static const bottomNavBarSelected = primaryGreen;
+  static const bottomNavBarSelectedIcon = iconWhite;
+  static const bottomNavBarUnselectedIcon = grey;
+  static Color bottomNavBarBorder = grey.withOpacity(0.1);
+  static Color bottomNavBarShadow = primaryGreen.withOpacity(0.2);
 }
