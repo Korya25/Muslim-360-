@@ -5,7 +5,7 @@ import 'package:muslim360/core/routing/app_routes.dart';
 
 class NavItems {
   static final List<NavItemModel> items = [
-    NavItemModel(icon: Icons.home, route: AppRoutes.home, title: 'الرئسية'),
+    NavItemModel(icon: Icons.home, route: AppRoutes.home, title: 'الرئيسية'),
     const NavItemModel(
       icon: FlutterIslamicIcons.solidPrayingPerson,
       route: AppRoutes.prayer,

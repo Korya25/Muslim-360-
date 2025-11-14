@@ -1,3 +1,4 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:muslim360/core/constants/app_constants.dart';
 
@@ -10,8 +11,8 @@ void main() {
   setupLocator();
 
   runApp(
-    // DevicePreview(builder: (context) => MuslimApp()),
-    MuslimApp(),
+    DevicePreview(builder: (context) => MuslimApp()),
+    // MuslimApp(),
   );
 }
 

@@ -16,10 +16,7 @@ class CustomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
-      decoration: BoxDecoration(
-        color: AppColors.bottomNavBarBackground,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-      ),
+      decoration: BoxDecoration(color: AppColors.bottomNavBarBackground),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: NavItems.items.map((item) {
@@ -29,25 +26,18 @@ class CustomNavBar extends StatelessWidget {
               onTap: () {
                 if (!isSelected) context.go(item.route);
               },
-              child: Container(
+              child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                margin: const EdgeInsets.symmetric(horizontal: 8),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? AppColors.bottomNavBarSelected
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(6),
-                ),
                 child: Column(
+                  spacing: 8,
                   children: [
                     Icon(
                       item.icon,
-                      size: 22,
+                      size: 26,
                       color: isSelected
                           ? AppColors.textWhite
                           : AppColors.textGrey,
                     ),
-                    const SizedBox(height: 4),
                     Text(
                       item.title.truncate(8),
                       maxLines: 1,
