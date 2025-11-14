@@ -27,6 +27,10 @@ class MuslimApp extends StatelessWidget {
       theme: AppTheme.darkTheme,
       themeMode: ThemeMode.dark,
       routerConfig: AppRouter.router,
+      locale: const Locale('ar', 'EG'),
+      builder: (context, child) {
+        return Directionality(textDirection: TextDirection.rtl, child: child!);
+      },
     );
   }
 }
