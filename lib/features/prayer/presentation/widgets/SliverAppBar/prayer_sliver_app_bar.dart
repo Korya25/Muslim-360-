@@ -31,11 +31,15 @@ class PrayerSliverAppBar extends StatelessWidget {
               Text(
                 '0',
                 style: AppTextStyles.body.copyWith(
-                  color: AppColors.textGrey,
+                  color: AppColors.textGrey.withAlpha(150),
                   fontSize: 16,
                 ),
               ),
-              Icon(Icons.bolt_sharp, color: AppColors.textGrey, size: 33),
+              Icon(
+                Icons.bolt_sharp,
+                color: AppColors.textGrey.withAlpha(150),
+                size: 28,
+              ),
             ],
           ),
         ),
@@ -47,7 +51,7 @@ class PrayerSliverAppBar extends StatelessWidget {
             child: Icon(
               Icons.more_vert_sharp,
               color: AppColors.textGrey,
-              size: 33,
+              size: 28,
             ),
           ),
         ),
