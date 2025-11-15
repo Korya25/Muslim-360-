@@ -47,4 +47,3 @@ class PrayerTimingModel extends PrayerTiming {
     };
   }
 }
-

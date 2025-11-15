@@ -28,4 +28,3 @@ class PrayerCubit extends Cubit<PrayerState> {
     );
   }
 }
-

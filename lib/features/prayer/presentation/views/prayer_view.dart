@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim360/core/theme/fonts/app_text_styles.dart';
+import 'package:muslim360/core/theme/style/app_colors.dart';
 import '../cubit/prayer_cubit.dart';
 import '../cubit/prayer_state.dart';
-import '../../domain/entities/prayer_day.dart';
+import '../../domain/entities/prayer_calendar.dart';
 
 class PrayerView extends StatefulWidget {
   const PrayerView({super.key});
@@ -15,297 +17,125 @@ class _PrayerViewState extends State<PrayerView> {
   @override
   void initState() {
     super.initState();
-    // Load prayer times when view is first opened
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadPrayerTimes(context);
+
+    // LOCATION FAKE TEMPORARY
+    Future.microtask(() {
+      // ignore: use_build_context_synchronously
+      context.read<PrayerCubit>().loadPrayerCalendar(
+        year: 2026,
+        month: 2,
+        latitude: 30.0444, // Cairo (Fake)
+        longitude: 31.2357, // Cairo (Fake)
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Prayer Times')),
-      body: BlocBuilder<PrayerCubit, PrayerState>(
-        builder: (context, state) {
-          if (state is PrayerLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (state is PrayerError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Error: ${state.message}'),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      _loadPrayerTimes(context);
-                    },
-                    child: const Text('Retry'),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          if (state is PrayerLoaded) {
-            final currentDay = _getCurrentDay(state.calendar.data);
-
-            if (currentDay == null) {
+      backgroundColor: AppColors.scaffoldBackground,
+      body: SafeArea(
+        child: BlocBuilder<PrayerCubit, PrayerState>(
+          builder: (context, state) {
+            if (state is PrayerLoading || state is PrayerInitial) {
+              return const Center(
+                child: CircularProgressIndicator(color: AppColors.primaryGreen),
+              );
+            } else if (state is PrayerError) {
               return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Current day not found in calendar'),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        _loadPrayerTimes(context);
-                      },
-                      child: const Text('Reload'),
-                    ),
-                  ],
+                child: Text(
+                  state.message,
+                  style: const TextStyle(color: AppColors.white),
                 ),
               );
+            } else if (state is PrayerLoaded) {
+              return _buildPrayerContent(state.calendar);
+            } else {
+              return const SizedBox.shrink();
             }
-
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Card(
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Date Section
-                      _buildDateSection(currentDay),
-                      const Divider(height: 32),
-
-                      // Prayer Timings Section
-                      _buildSectionTitle('Prayer Timings'),
-                      const SizedBox(height: 16),
-                      _buildTimingRow('Imsak', currentDay.timings.imsak),
-                      _buildTimingRow('Fajr', currentDay.timings.fajr),
-                      _buildTimingRow('Sunrise', currentDay.timings.sunrise),
-                      _buildTimingRow('Dhuhr', currentDay.timings.dhuhr),
-                      _buildTimingRow('Asr', currentDay.timings.asr),
-                      _buildTimingRow('Sunset', currentDay.timings.sunset),
-                      _buildTimingRow('Maghrib', currentDay.timings.maghrib),
-                      _buildTimingRow('Isha', currentDay.timings.isha),
-                      const Divider(height: 32),
-
-                      // Additional Timings Section
-                      _buildSectionTitle('Additional Timings'),
-                      const SizedBox(height: 16),
-                      _buildTimingRow('Midnight', currentDay.timings.midnight),
-                      _buildTimingRow(
-                        'First Third',
-                        currentDay.timings.firstthird,
-                      ),
-                      _buildTimingRow(
-                        'Last Third',
-                        currentDay.timings.lastthird,
-                      ),
-                      const Divider(height: 32),
-
-                      // Meta Information Section
-                      _buildSectionTitle('Location & Method'),
-                      const SizedBox(height: 16),
-                      _buildInfoRow('Timezone', currentDay.meta.timezone),
-                      _buildInfoRow('Method', currentDay.meta.method.name),
-                      _buildInfoRow(
-                        'Latitude',
-                        currentDay.meta.latitude.toStringAsFixed(5),
-                      ),
-                      _buildInfoRow(
-                        'Longitude',
-                        currentDay.meta.longitude.toStringAsFixed(5),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }
-
-          return Center(
-            child: ElevatedButton(
-              onPressed: () {
-                _loadPrayerTimes(context);
-              },
-              child: const Text('Load Prayer Times'),
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildDateSection(PrayerDay day) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          day.date.readable,
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          day.date.gregorian.weekday.en,
-          style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _buildDateCard(
-                'Gregorian',
-                day.date.gregorian.date,
-                day.date.gregorian.month.en,
-                day.date.gregorian.year,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _buildDateCard(
-                'Hijri',
-                day.date.hijri.date,
-                day.date.hijri.month.en,
-                day.date.hijri.year,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
+  Widget _buildPrayerContent(PrayerCalendar calendar) {
+    // اليوم الحالي (نجيب اليوم الأول كمثال)
+    final today = calendar.data.first;
+    final timings = today.timings;
 
-  Widget _buildDateCard(String title, String date, String month, String year) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.blue.shade50,
-        borderRadius: BorderRadius.circular(8),
-      ),
+    // تحويل أسماء الأيام والشهور للغة العربية إذا موجودة
+    final weekdayAr =
+        today.date.gregorian.weekday.ar ?? today.date.gregorian.weekday.en;
+    final monthAr =
+        today.date.gregorian.month.ar ?? today.date.gregorian.month.en;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
-              fontWeight: FontWeight.w500,
+          // التاريخ
+          Center(
+            child: Column(
+              children: [
+                Text(
+                  today.date.readable, // 18 Feb 2026
+                  style: AppTextStyles.headlineLarge.copyWith(
+                    color: AppColors.white,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'اليوم: $weekdayAr, ${today.date.gregorian.day} $monthAr ${today.date.gregorian.year}',
+                  style: AppTextStyles.body.copyWith(color: AppColors.textGrey),
+                ),
+                Text(
+                  'هجري: ${today.date.hijri.day} ${today.date.hijri.month.ar ?? today.date.hijri.month.en} ${today.date.hijri.year}',
+                  style: AppTextStyles.body.copyWith(color: AppColors.textGrey),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            date,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            '$month $year',
-            style: TextStyle(fontSize: 12, color: Colors.grey[700]),
-          ),
+          const SizedBox(height: 24),
+          // مواقيت الصلاة
+          _buildPrayerTimeCard('الفجر', timings.fajr),
+          _buildPrayerTimeCard('الشروق', timings.sunrise),
+          _buildPrayerTimeCard('الظهر', timings.dhuhr),
+          _buildPrayerTimeCard('العصر', timings.asr),
+          _buildPrayerTimeCard('المغرب', timings.maghrib),
+          _buildPrayerTimeCard('العشاء', timings.isha),
+          const SizedBox(height: 24),
+          // أوقات إضافية
+          _buildPrayerTimeCard('الإمساك', timings.imsak),
+          _buildPrayerTimeCard('منتصف الليل', timings.midnight),
         ],
       ),
     );
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-    );
-  }
-
-  Widget _buildTimingRow(String name, String time) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+  Widget _buildPrayerTimeCard(String name, String time) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.bottomNavBarBackground,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.bottomNavBarBorder),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             name,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            style: AppTextStyles.body.copyWith(color: AppColors.textWhite),
           ),
           Text(
             time,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue,
-            ),
+            style: AppTextStyles.body.copyWith(color: AppColors.primaryGreen),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: TextStyle(fontSize: 14, color: Colors.grey[700])),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-          ),
-        ],
-      ),
-    );
-  }
-
-  PrayerDay? _getCurrentDay(List<PrayerDay> days) {
-    final now = DateTime.now();
-    final currentDate =
-        '${now.day.toString().padLeft(2, '0')}-${now.month.toString().padLeft(2, '0')}-${now.year}';
-
-    try {
-      return days.firstWhere((day) => day.date.gregorian.date == currentDate);
-    } catch (e) {
-      // If exact match not found, try to find by readable date
-      final readableDate =
-          '${now.day.toString().padLeft(2, '0')} ${_getMonthName(now.month)} ${now.year}';
-      try {
-        return days.firstWhere((day) => day.date.readable == readableDate);
-      } catch (e) {
-        // Return first day if current day not found
-        return days.isNotEmpty ? days.first : null;
-      }
-    }
-  }
-
-  String _getMonthName(int month) {
-    const months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ];
-    return months[month - 1];
-  }
-
-  void _loadPrayerTimes(BuildContext context) {
-    // Default coordinates (Cairo, Egypt)
-    // In a real app, you would get these from location services
-    context.read<PrayerCubit>().loadPrayerCalendar(
-      year: DateTime.now().year,
-      month: DateTime.now().month,
-      latitude: 30.96713,
-      longitude: 31.02648,
     );
   }
 }
