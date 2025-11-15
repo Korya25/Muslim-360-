@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muslim360/core/di/service_locator.dart';
 import 'package:muslim360/core/presentation/view/main_view.dart';
 import 'package:muslim360/core/routing/app_routes.dart';
 import 'package:muslim360/core/routing/app_transitions.dart';
+import 'package:muslim360/features/prayer/presentation/cubit/prayer_cubit.dart';
 import 'package:muslim360/features/prayer/presentation/views/prayer_view.dart';
 
 class AppRouter {
@@ -29,7 +32,10 @@ class AppRouter {
             pageBuilder: (context, state) => AppTransitions.slideFromRight(
               context: context,
               state: state,
-              child: const PrayerView(),
+              child: BlocProvider(
+                create: (context) => locator<PrayerCubit>(),
+                child: const PrayerView(),
+              ),
             ),
           ),
           GoRoute(

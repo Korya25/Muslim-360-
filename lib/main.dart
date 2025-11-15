@@ -1,18 +1,20 @@
-import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muslim360/core/constants/app_constants.dart';
+import 'package:muslim360/core/utils/bloc_observer.dart';
 
 import 'core/di/service_locator.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/style/app_theme.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  setupLocator();
+  Bloc.observer = AppBlocObserver();
+  await setupLocator();
 
   runApp(
-    DevicePreview(builder: (context) => MuslimApp()),
-    // MuslimApp(),
+    // DevicePreview(builder: (context) => MuslimApp()),
+    MuslimApp(),
   );
 }
 
