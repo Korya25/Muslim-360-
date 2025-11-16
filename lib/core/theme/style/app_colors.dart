@@ -21,7 +21,7 @@ class AppColors {
   static const iconGrey = grey;
 
   // Nav Bar
-  static const bottomNavBarBackground = Color(0xFF1A1A1A);
+  static const bottomNavBarBackground = Color.fromARGB(255, 21, 21, 21);
   static const bottomNavBarSelected = primaryGreen;
   static const bottomNavBarSelectedIcon = iconWhite;
   static const bottomNavBarUnselectedIcon = grey;

@@ -34,7 +34,7 @@ class AppRouter {
               state: state,
               child: BlocProvider(
                 create: (context) => locator<PrayerCubit>(),
-                child: const PrayerView(),
+                child: PrayerTimesScreen(),
               ),
             ),
           ),

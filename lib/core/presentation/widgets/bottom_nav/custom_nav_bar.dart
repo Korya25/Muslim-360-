@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:muslim360/core/extension/string_extension.dart';
 import 'package:muslim360/core/theme/style/app_colors.dart';
@@ -15,27 +16,28 @@ class CustomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
       decoration: BoxDecoration(color: AppColors.bottomNavBarBackground),
+
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: NavItems.items.map((item) {
           final isSelected = currentRoute == item.route;
           return Expanded(
-            child: GestureDetector(
+            child: InkWell(
               onTap: () {
                 if (!isSelected) context.go(item.route);
               },
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Column(
-                  spacing: 8,
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: 4,
                   children: [
-                    Icon(
+                    SvgPicture.asset(
                       item.icon,
-                      size: 26,
+                      width: 26,
                       color: isSelected
-                          ? AppColors.textWhite
+                          ? AppColors.primaryGreen
                           : AppColors.textGrey,
                     ),
                     Text(
@@ -48,7 +50,7 @@ class CustomNavBar extends StatelessWidget {
                             ? FontWeight.w600
                             : FontWeight.w400,
                         color: isSelected
-                            ? AppColors.textWhite
+                            ? AppColors.primaryGreen
                             : AppColors.textGrey,
                       ),
                     ),
