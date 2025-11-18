@@ -28,7 +28,7 @@ class CustomNavBar extends StatelessWidget {
                 if (!isSelected) context.go(item.route);
               },
               child: Padding(
-                padding: const EdgeInsets.only(top: 8, bottom: 8),
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Column(
                   children: [
                     SvgPicture.asset(

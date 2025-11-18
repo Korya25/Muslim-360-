@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:muslim360/features/prayer/presentation/data/prayer_data.dart';
 import 'package:muslim360/features/prayer/presentation/widgets/hijri_gregorian_date.dart';
 import 'package:muslim360/features/prayer/presentation/widgets/next_prayer_progress.dart';
+import 'package:muslim360/features/prayer/presentation/widgets/prayer_times_list.dart';
 
 class PrayerTimesScreen extends StatelessWidget {
   const PrayerTimesScreen({super.key});
@@ -14,7 +16,7 @@ class PrayerTimesScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: SafeArea(
             child: Column(
-              spacing: 30,
+              spacing: 28,
               children: [
                 Center(child: HijriGregorianDate()),
 
@@ -24,6 +26,13 @@ class PrayerTimesScreen extends StatelessWidget {
                   prayerTime: '3:20 م',
                   remainingTime: '1:30:15',
                 ),
+
+                PrayerTimesList(
+                  prayerTimes: fakePrayerTimes,
+                  currentPrayerKey: 'dhuhr',
+                ),
+
+                SizedBox(height: 50),
               ],
             ),
           ),

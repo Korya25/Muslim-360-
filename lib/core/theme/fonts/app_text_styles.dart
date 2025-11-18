@@ -20,23 +20,12 @@ class AppTextStyles {
     fontSize: 18,
     fontWeight: FontWeight.w500,
   );
+  /////////////
 
-  static final TextStyle quran24W100White = quran.copyWith(
-    color: AppColors.textWhite,
-    fontSize: 25,
-    fontWeight: FontWeight.w100,
-  );
-
-  static final TextStyle body24BoldWhite = body.copyWith(
-    fontSize: 24,
+  static final TextStyle body18BoldWhite = body.copyWith(
+    fontSize: 18,
     fontWeight: FontWeight.bold,
     color: AppColors.textWhite,
-  );
-
-  static final TextStyle body16W800Grey = body.copyWith(
-    fontSize: 16,
-    fontWeight: FontWeight.w800,
-    color: AppColors.textGrey,
   );
 
   static final TextStyle body30BoldWhite = body.copyWith(
@@ -62,5 +51,11 @@ class AppTextStyles {
     fontSize: 14,
     fontWeight: FontWeight.w800,
     color: AppColors.textGrey,
+  );
+
+  static final TextStyle quran18W600White = body.copyWith(
+    color: AppColors.textWhite,
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
   );
 }

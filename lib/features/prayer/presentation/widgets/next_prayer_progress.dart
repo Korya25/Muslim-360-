@@ -22,8 +22,8 @@ class NextPrayerProgress extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         SizedBox(
-          width: 220,
-          height: 220,
+          width: 200,
+          height: 200,
           child: CircularProgressIndicator(
             value: progress,
             strokeWidth: 6,
@@ -38,7 +38,7 @@ class NextPrayerProgress extends StatelessWidget {
             shape: BoxShape.circle,
             color: AppColors.bottomNavBarBackground,
           ),
-          padding: const EdgeInsets.all(35),
+          padding: const EdgeInsets.all(25),
           child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
