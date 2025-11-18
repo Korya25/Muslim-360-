@@ -21,6 +21,12 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
   );
 
+  static final TextStyle quran24W100White = quran.copyWith(
+    color: AppColors.textWhite,
+    fontSize: 25,
+    fontWeight: FontWeight.w100,
+  );
+
   static final TextStyle body24BoldWhite = body.copyWith(
     fontSize: 24,
     fontWeight: FontWeight.bold,
