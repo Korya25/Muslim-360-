@@ -1,33 +1,25 @@
-import 'package:muslim360/core/constants/svgs_icon.dart';
 import 'package:muslim360/core/presentation/widgets/bottom_nav/nav_item_model.dart';
 import 'package:muslim360/core/routing/app_routes.dart';
 
 class NavItems {
   static final List<NavItemModel> items = [
     NavItemModel(
-      icon: SvgsIcon.houseChimney,
+      icon: 'assets/svgs/house.svg',
+      iconActive: 'assets/svgs/house1.svg',
       route: AppRoutes.home,
       title: 'الرئيسية',
     ),
     const NavItemModel(
-      icon: SvgsIcon.mosque,
+      icon: 'assets/svgs/mosque.svg',
+      iconActive: 'assets/svgs/mosque1.svg',
       route: AppRoutes.prayer,
       title: 'الصلاة',
     ),
     const NavItemModel(
-      icon: SvgsIcon.bookQuran,
+      icon: 'assets/svgs/quran.svg',
+      iconActive: 'assets/svgs/quran1.svg',
       route: AppRoutes.quran,
       title: 'القرآن',
-    ),
-    NavItemModel(
-      icon: SvgsIcon.prayingHands,
-      route: AppRoutes.azkar,
-      title: 'الأذكار',
-    ),
-    const NavItemModel(
-      icon: SvgsIcon.settings,
-      route: AppRoutes.more,
-      title: 'الضبط',
     ),
   ];
 }

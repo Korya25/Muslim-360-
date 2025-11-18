@@ -47,24 +47,6 @@ class AppRouter {
               child: const Scaffold(),
             ),
           ),
-          GoRoute(
-            path: AppRoutes.azkar,
-            name: AppRoutes.azkar,
-            pageBuilder: (context, state) => AppTransitions.slideFromBottom(
-              context: context,
-              state: state,
-              child: const Scaffold(),
-            ),
-          ),
-          GoRoute(
-            path: AppRoutes.more,
-            name: AppRoutes.more,
-            pageBuilder: (context, state) => AppTransitions.fadeScale(
-              context: context,
-              state: state,
-              child: const Scaffold(),
-            ),
-          ),
         ],
       ),
     ],

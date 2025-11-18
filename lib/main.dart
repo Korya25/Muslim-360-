@@ -13,7 +13,7 @@ void main() async {
   await setupLocator();
 
   runApp(
-    // DevicePreview(builder: (context) => MuslimApp()),
+    //DevicePreview(builder: (context) => MuslimApp()),
     MuslimApp(),
   );
 }

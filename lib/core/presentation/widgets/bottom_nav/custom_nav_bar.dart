@@ -28,14 +28,12 @@ class CustomNavBar extends StatelessWidget {
                 if (!isSelected) context.go(item.route);
               },
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
+                padding: const EdgeInsets.only(top: 8, bottom: 8),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 4,
                   children: [
                     SvgPicture.asset(
-                      item.icon,
-                      width: 26,
+                      isSelected ? item.iconActive : item.icon,
+                      width: 22,
                       color: isSelected
                           ? AppColors.primaryGreen
                           : AppColors.textGrey,
@@ -44,8 +42,8 @@ class CustomNavBar extends StatelessWidget {
                       item.title.truncate(8),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.body.copyWith(
-                        fontSize: 12,
+                      style: AppTextStyles.quran.copyWith(
+                        fontSize: 16,
                         fontWeight: isSelected
                             ? FontWeight.w600
                             : FontWeight.w400,
