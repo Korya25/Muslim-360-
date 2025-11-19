@@ -7,7 +7,7 @@ class AppColors {
   static const scaffoldBackground = Color(0xFF0F0F0F);
   static const secondaryBackground = Color.fromARGB(255, 25, 25, 25);
   static const primaryGreen = Color(0xFF35A306);
-  static const white = Color(0xFFFFFFFF);
+  static const white = Colors.white;
   static const grey = Colors.grey;
   static const textWhite = white;
   static const textGrey = grey;
