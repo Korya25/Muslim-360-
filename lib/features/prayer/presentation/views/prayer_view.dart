@@ -30,11 +30,7 @@ class PrayerTimesScreen extends StatelessWidget {
                 ),
 
                 Padding(
-                  padding: const EdgeInsets.only(
-                    top: 0,
-
-                    //
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 0),
                   child: PrayerTimesList(
                     prayerTimes: fakePrayerTimes,
                     currentPrayerKey: 'dhuhr',

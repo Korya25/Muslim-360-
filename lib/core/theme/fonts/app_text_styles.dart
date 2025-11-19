@@ -21,6 +21,47 @@ class AppTextStyles {
     fontWeight: FontWeight.w500,
   );
 
+  // ---------------------------------------
+  // Styles مستخرجة من PrayerTimeItem
+  // ---------------------------------------
+
+  /// اسم الصلاة داخل القائمة
+  static final TextStyle cairo16W600White = body.copyWith(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+    color: AppColors.textWhite,
+  );
+
+  static final TextStyle cairo16W700Primary = body.copyWith(
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    color: AppColors.primaryGreen,
+  );
+
+  /// وقت الصلاة
+  static final TextStyle amiri15W700White = amiri.copyWith(
+    fontSize: 15,
+    fontWeight: FontWeight.w700,
+    color: AppColors.white,
+  );
+
+  static final TextStyle amiri15W900Primary = amiri.copyWith(
+    fontSize: 15,
+    fontWeight: FontWeight.w900,
+    color: AppColors.primaryGreen,
+  );
+
+  /// نص السنّة تحت العنصر
+  static final TextStyle cairo12W600Primary = body.copyWith(
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    color: AppColors.textPrimary,
+  );
+
+  // ---------------------------------------
+  // Styles قديمة (لا تُحذف)
+  // ---------------------------------------
+
   static final TextStyle head30W700Primary = headlineLarge.copyWith(
     fontWeight: FontWeight.w700,
     color: AppColors.textPrimary,
@@ -40,12 +81,14 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
     color: AppColors.textWhite.withAlpha(180),
   );
+
   static final TextStyle body24W700White = body.copyWith(
     fontSize: 24,
     fontWeight: FontWeight.w700,
     height: 0.7,
     color: AppColors.textWhite,
   );
+
   static final TextStyle body13BoldWhite = body.copyWith(
     fontSize: 13,
     fontWeight: FontWeight.bold,

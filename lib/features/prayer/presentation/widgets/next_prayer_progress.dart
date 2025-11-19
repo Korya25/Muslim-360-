@@ -38,7 +38,7 @@ class NextPrayerProgress extends StatelessWidget {
             shape: BoxShape.circle,
             color: AppColors.bottomNavBarBackground,
           ),
-          padding: const EdgeInsets.all(35),
+          padding: const EdgeInsets.all(37),
           child: Column(
             spacing: 16,
             children: [
