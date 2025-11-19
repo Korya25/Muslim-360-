@@ -39,23 +39,20 @@ class _PrayerTimeItemState extends State<PrayerTimeItem> {
     final isActive = widget.isActive;
 
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 24),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // --- Icon ---
               SizedBox(
-                height: 40,
-                width: 40,
+                height: 45,
+                width: 45,
                 child: Lottie.asset(prayer.iconPath, fit: BoxFit.contain),
               ),
 
               const SizedBox(width: 12),
 
-              // --- Name ---
               Text(
                 prayer.name,
                 style: isActive
@@ -65,7 +62,6 @@ class _PrayerTimeItemState extends State<PrayerTimeItem> {
 
               const SizedBox(width: 12),
 
-              // --- Expand button (only if sunnah exists) ---
               if (prayer.sunnah != null)
                 GestureDetector(
                   onTap: _toggleExpand,
@@ -80,7 +76,6 @@ class _PrayerTimeItemState extends State<PrayerTimeItem> {
 
               const Spacer(),
 
-              // --- Time ---
               Text(
                 widget.prayerTime,
                 style: isActive
@@ -91,7 +86,6 @@ class _PrayerTimeItemState extends State<PrayerTimeItem> {
           ),
         ),
 
-        // --- Sunnah Content ---
         if (_isExpanded && prayer.sunnah != null)
           Padding(
             padding: const EdgeInsets.only(

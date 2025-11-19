@@ -22,8 +22,8 @@ class NextPrayerProgress extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         SizedBox(
-          width: 170,
-          height: 170,
+          width: 180,
+          height: 180,
           child: CircularProgressIndicator(
             value: progress,
             strokeWidth: 4,
@@ -38,20 +38,33 @@ class NextPrayerProgress extends StatelessWidget {
             shape: BoxShape.circle,
             color: AppColors.bottomNavBarBackground,
           ),
-          padding: const EdgeInsets.all(37),
+          padding: const EdgeInsets.all(45),
           child: Column(
             spacing: 16,
             children: [
               Column(
                 children: [
-                  Text(prayerName, style: AppTextStyles.body24W700White),
-                  Text(prayerTime, style: AppTextStyles.amiri18W600White200),
+                  Text(
+                    prayerName,
+                    style: AppTextStyles.body24W700White.copyWith(fontSize: 26),
+                  ),
+                  Text(
+                    prayerTime,
+                    style: AppTextStyles.amiri18W600White200.copyWith(
+                      fontSize: 20,
+                    ),
+                  ),
                 ],
               ),
 
               Column(
                 children: [
-                  Text(remainingTime, style: AppTextStyles.head30W700Primary),
+                  Text(
+                    remainingTime,
+                    style: AppTextStyles.head30W700Primary.copyWith(
+                      fontSize: 28,
+                    ),
+                  ),
                   Text('متبقي', style: AppTextStyles.amiri16W600White180),
                 ],
               ),

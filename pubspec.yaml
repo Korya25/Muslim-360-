@@ -71,9 +71,9 @@ flutter:
   assets:
     - assets/image/native_splash/
     - assets/svgs/
-    - assets/svgs/prayer_time/
     - assets/svgs/navbar/
     - assets/lottie/
+    - assets/image/more/
 
   fonts:
     - family: ReemKufi

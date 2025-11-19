@@ -8,8 +8,14 @@ class HijriGregorianDate extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text('14 ذو الحجة 1445 هـ', style: AppTextStyles.body13BoldWhite),
-        Text('الجمعة, 28 يونيو 2025', style: AppTextStyles.body14W800Grey),
+        Text(
+          '14 ذو الحجة 1445 هـ',
+          style: AppTextStyles.body13BoldWhite.copyWith(fontSize: 16),
+        ),
+        Text(
+          'الجمعة, 28 يونيو 2025',
+          style: AppTextStyles.body14W800Grey.copyWith(fontSize: 12),
+        ),
       ],
     );
   }
