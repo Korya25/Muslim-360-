@@ -7,9 +7,8 @@ class HijriGregorianDate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      spacing: 2,
       children: [
-        Text('14 ذو الحجة 1445 هـ', style: AppTextStyles.body18BoldWhite),
+        Text('14 ذو الحجة 1445 هـ', style: AppTextStyles.body13BoldWhite),
         Text('الجمعة, 28 يونيو 2025', style: AppTextStyles.body14W800Grey),
       ],
     );

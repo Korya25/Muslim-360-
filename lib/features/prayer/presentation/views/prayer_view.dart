@@ -16,23 +16,32 @@ class PrayerTimesScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: SafeArea(
             child: Column(
-              spacing: 28,
               children: [
                 Center(child: HijriGregorianDate()),
 
-                NextPrayerProgress(
-                  progress: 0.6,
-                  prayerName: 'العصر',
-                  prayerTime: '3:20 م',
-                  remainingTime: '1:30:15',
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: NextPrayerProgress(
+                    progress: 0.1,
+                    prayerName: 'العصر',
+                    prayerTime: '3:20م',
+                    remainingTime: '1:30:15',
+                  ),
                 ),
 
-                PrayerTimesList(
-                  prayerTimes: fakePrayerTimes,
-                  currentPrayerKey: 'dhuhr',
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 0,
+
+                    //
+                  ),
+                  child: PrayerTimesList(
+                    prayerTimes: fakePrayerTimes,
+                    currentPrayerKey: 'dhuhr',
+                  ),
                 ),
 
-                SizedBox(height: 50),
+                SizedBox(height: 300),
               ],
             ),
           ),

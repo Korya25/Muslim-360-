@@ -42,7 +42,7 @@ class CustomNavBar extends StatelessWidget {
                       item.title.truncate(8),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.quran.copyWith(
+                      style: AppTextStyles.amiri.copyWith(
                         fontSize: 16,
                         fontWeight: isSelected
                             ? FontWeight.w600

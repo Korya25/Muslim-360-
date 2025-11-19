@@ -22,14 +22,14 @@ class NextPrayerProgress extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         SizedBox(
-          width: 200,
-          height: 200,
+          width: 170,
+          height: 170,
           child: CircularProgressIndicator(
             value: progress,
-            strokeWidth: 6,
+            strokeWidth: 4,
             backgroundColor: AppColors.secondaryBackground,
             valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryGreen),
-            strokeCap: StrokeCap.square,
+            strokeCap: StrokeCap.round,
           ),
         ),
 
@@ -38,19 +38,25 @@ class NextPrayerProgress extends StatelessWidget {
             shape: BoxShape.circle,
             color: AppColors.bottomNavBarBackground,
           ),
-          padding: const EdgeInsets.all(25),
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(prayerName, style: AppTextStyles.body30BoldWhite),
-                const SizedBox(height: 8),
-                Text(prayerTime, style: AppTextStyles.headline18W900Grey),
-                const SizedBox(height: 8),
-                Text(remainingTime, style: AppTextStyles.headline30W900Primary),
-                Text('متبقي', style: AppTextStyles.body14W800Grey),
-              ],
-            ),
+          padding: const EdgeInsets.all(35),
+          child: Column(
+            spacing: 16,
+            children: [
+              Column(
+                children: [
+                  Text(prayerName, style: AppTextStyles.body24W700White),
+                  Text(prayerTime, style: AppTextStyles.amiri18W600White200),
+                ],
+              ),
+
+              Column(
+                children: [
+                  Text(remainingTime, style: AppTextStyles.head30W700Primary),
+                  Text('متبقي', style: AppTextStyles.amiri16W600White180),
+                ],
+              ),
+              SizedBox(),
+            ],
           ),
         ),
       ],
