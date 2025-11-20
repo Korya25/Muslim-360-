@@ -89,8 +89,8 @@ class _PrayerTimeItemState extends State<PrayerTimeItem> {
         if (_isExpanded && prayer.sunnah != null)
           Padding(
             padding: const EdgeInsets.only(
-              left: 16,
-              right: 16,
+              left: 24,
+              right: 60,
               bottom: 12,
               top: 0,
             ),
