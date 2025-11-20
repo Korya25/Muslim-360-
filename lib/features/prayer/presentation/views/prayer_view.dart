@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:muslim360/features/prayer/presentation/data/prayer_data.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:muslim360/features/prayer/presentation/cubit/prayer_cubit.dart';
+import 'package:muslim360/features/prayer/presentation/cubit/prayer_state.dart';
 import 'package:muslim360/features/prayer/presentation/widgets/features_list.dart';
 import 'package:muslim360/features/prayer/presentation/widgets/hijri_gregorian_date.dart';
 import 'package:muslim360/features/prayer/presentation/widgets/next_prayer_progress.dart';
@@ -11,35 +13,43 @@ class PrayerTimesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(child: HijriGregorianDate()),
+      body: BlocBuilder<PrayerCubit, PrayerState>(
+        builder: (context, state) {
+          if (state is PrayerLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is PrayerLoaded) {
+            final todayPrayer = state.todayPrayer;
+            final prayerTimesClean = todayPrayer.prayerTimesClean;
 
-              const SizedBox(height: 16),
-              Center(
-                child: NextPrayerProgress(
-                  progress: 0.1,
-                  prayerName: 'العصر',
-                  prayerTime: '3:20م',
-                  remainingTime: '1:30:15',
+            return SingleChildScrollView(
+              child: SafeArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: HijriGregorianDate(
+                        hijri: todayPrayer.hijriFormatted,
+                        gregorian: todayPrayer.gregorianFormatted,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Center(
+                      child: NextPrayerProgress(prayerTimes: prayerTimesClean),
+                    ),
+                    PrayerTimesList(day: todayPrayer),
+                    const SizedBox(height: 22),
+                    const PrayerFeaturesSection(),
+                    const SizedBox(height: 10),
+                  ],
                 ),
               ),
-
-              PrayerTimesList(
-                prayerTimes: fakePrayerTimes,
-                currentPrayerKey: 'dhuhr',
-              ),
-
-              const SizedBox(height: 22),
-
-              PrayerFeaturesSection(),
-              const SizedBox(height: 10),
-            ],
-          ),
-        ),
+            );
+          } else if (state is PrayerError) {
+            return Center(child: Text(state.message));
+          } else {
+            return const SizedBox.shrink();
+          }
+        },
       ),
     );
   }

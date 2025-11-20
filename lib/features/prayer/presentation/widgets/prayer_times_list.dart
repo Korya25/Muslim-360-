@@ -1,27 +1,24 @@
+// prayer_times_list.dart
 import 'package:flutter/material.dart';
-import 'package:muslim360/features/prayer/presentation/data/prayer_data.dart';
+import 'package:muslim360/features/prayer/data/model/prayer_day.dart';
 import 'package:muslim360/features/prayer/presentation/widgets/prayer_time_item.dart';
 
 class PrayerTimesList extends StatelessWidget {
-  final Map<String, String> prayerTimes;
-  final String? currentPrayerKey;
+  final PrayerDay day;
 
-  const PrayerTimesList({
-    super.key,
-    required this.prayerTimes,
-    this.currentPrayerKey,
-  });
+  const PrayerTimesList({super.key, required this.day});
 
   @override
   Widget build(BuildContext context) {
+    final prayers = day.prayers;
+    final nextPrayerName = day.nextPrayerName;
+
     return Column(
-      children: fakePrayers.map((prayer) {
-        final prayerTime = prayerTimes[prayer.timeKey] ?? '--:--';
-        final isActive = currentPrayerKey == prayer.timeKey;
+      children: prayers.map((prayer) {
         return PrayerTimeItem(
           prayer: prayer,
-          prayerTime: prayerTime,
-          isActive: isActive,
+          prayerTime: day.prayerTimesCleanForDisplay[prayer.name] ?? '',
+          isActive: prayer.name == nextPrayerName,
         );
       }).toList(),
     );
