@@ -41,7 +41,7 @@ class _PrayerTimeItemState extends State<PrayerTimeItem> {
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [

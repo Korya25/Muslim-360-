@@ -28,12 +28,9 @@ class PrayerTimesScreen extends StatelessWidget {
                 ),
               ),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: PrayerTimesList(
-                  prayerTimes: fakePrayerTimes,
-                  currentPrayerKey: 'dhuhr',
-                ),
+              PrayerTimesList(
+                prayerTimes: fakePrayerTimes,
+                currentPrayerKey: 'dhuhr',
               ),
 
               const SizedBox(height: 22),
