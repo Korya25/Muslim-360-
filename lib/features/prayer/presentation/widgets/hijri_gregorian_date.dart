@@ -13,15 +13,10 @@ class HijriGregorianDate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      spacing: 2,
       children: [
-        Text(
-          hijri,
-          style: AppTextStyles.body13BoldWhite.copyWith(fontSize: 16),
-        ),
-        Text(
-          gregorian,
-          style: AppTextStyles.body14W800Grey.copyWith(fontSize: 12),
-        ),
+        Text(hijri, style: AppTextStyles.body13BoldWhite),
+        Text(gregorian, style: AppTextStyles.body12W800Grey),
       ],
     );
   }

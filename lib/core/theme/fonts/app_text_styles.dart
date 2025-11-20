@@ -114,8 +114,8 @@ class AppTextStyles {
     color: AppColors.textPrimary,
   );
 
-  static final TextStyle body14W800Grey = body.copyWith(
-    fontSize: 14,
+  static final TextStyle body12W800Grey = body.copyWith(
+    fontSize: 12,
     fontWeight: FontWeight.w800,
     color: AppColors.textGrey,
   );

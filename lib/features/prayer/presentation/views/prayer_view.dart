@@ -19,7 +19,6 @@ class PrayerTimesScreen extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           } else if (state is PrayerLoaded) {
             final todayPrayer = state.todayPrayer;
-            final prayerTimesClean = todayPrayer.prayerTimesClean;
 
             return SingleChildScrollView(
               child: SafeArea(
@@ -33,9 +32,7 @@ class PrayerTimesScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 16),
-                    Center(
-                      child: NextPrayerProgress(prayerTimes: prayerTimesClean),
-                    ),
+                    Center(child: NextPrayerProgress(day: todayPrayer)),
                     PrayerTimesList(day: todayPrayer),
                     const SizedBox(height: 22),
                     const PrayerFeaturesSection(),

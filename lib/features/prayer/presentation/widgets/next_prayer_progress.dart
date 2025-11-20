@@ -1,30 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:muslim360/core/theme/fonts/app_text_styles.dart';
 import 'package:muslim360/core/theme/style/app_colors.dart';
+import 'package:muslim360/features/prayer/data/model/prayer_day.dart';
 
 class NextPrayerProgress extends StatefulWidget {
-  final Map<String, String> prayerTimes;
+  final PrayerDay day;
 
-  const NextPrayerProgress({super.key, required this.prayerTimes});
+  const NextPrayerProgress({super.key, required this.day});
 
   @override
   State<NextPrayerProgress> createState() => _NextPrayerProgressState();
 }
 
 class _NextPrayerProgressState extends State<NextPrayerProgress> {
-  late String nextPrayerName;
+  late Prayer nextPrayer;
   late DateTime nextPrayerTime;
   late DateTime previousPrayerTime;
   late String remainingTime;
-
-  final List<String> arabicOrder = [
-    "الفجر",
-    "الشروق",
-    "الظهر",
-    "العصر",
-    "المغرب",
-    "العشاء",
-  ];
 
   @override
   void initState() {
@@ -44,17 +36,15 @@ class _NextPrayerProgressState extends State<NextPrayerProgress> {
 
   void _calculateTimes() {
     final now = DateTime.now();
+    final prayers = widget.day.prayers;
     DateTime? next;
     DateTime? prev;
-    String? nextName;
+    Prayer? nextPray;
 
-    for (final prayer in arabicOrder) {
-      final raw = widget.prayerTimes[prayer];
-      if (raw == null) continue;
-
-      final parts = raw.split(":");
+    for (var prayer in prayers) {
+      final timeStr = widget.day.prayerTimesClean[prayer.name] ?? '00:00';
+      final parts = timeStr.split(":");
       if (parts.length < 2) continue;
-
       final time = DateTime(
         now.year,
         now.month,
@@ -65,43 +55,37 @@ class _NextPrayerProgressState extends State<NextPrayerProgress> {
 
       if (time.isAfter(now) && next == null) {
         next = time;
-        nextName = prayer;
+        nextPray = prayer;
       }
-      if (time.isBefore(now)) {
-        prev = time;
-      }
+      if (time.isBefore(now)) prev = time;
     }
 
-    if (next == null) {
-      final fajr = widget.prayerTimes["الفجر"];
-      if (fajr != null) {
-        final p = fajr.split(":");
-        next = DateTime(
-          now.year,
-          now.month,
-          now.day + 1,
-          int.parse(p[0]),
-          int.parse(p[1]),
-        );
-        nextName = "الفجر";
-      }
+    if (next == null && prayers.isNotEmpty) {
+      final fajrTime = widget.day.prayerTimesClean['الفجر']!;
+      final p = fajrTime.split(":");
+      next = DateTime(
+        now.year,
+        now.month,
+        now.day + 1,
+        int.parse(p[0]),
+        int.parse(p[1]),
+      );
+      nextPray = prayers.firstWhere((p) => p.name == 'الفجر');
 
-      final isha = widget.prayerTimes["العشاء"];
-      if (isha != null) {
-        final ish = isha.split(":");
-        prev = DateTime(
-          now.year,
-          now.month,
-          now.day,
-          int.parse(ish[0]),
-          int.parse(ish[1]),
-        );
-      }
+      final ishaTime = widget.day.prayerTimesClean['العشاء']!;
+      final ish = ishaTime.split(":");
+      prev = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        int.parse(ish[0]),
+        int.parse(ish[1]),
+      );
     }
 
     previousPrayerTime = prev ?? now;
     nextPrayerTime = next ?? now.add(const Duration(hours: 1));
-    nextPrayerName = nextName ?? "الفجر";
+    nextPrayer = nextPray ?? prayers.first;
 
     final diff = nextPrayerTime.difference(now);
     remainingTime =
@@ -115,7 +99,6 @@ class _NextPrayerProgressState extends State<NextPrayerProgress> {
     final elapsedSeconds = DateTime.now()
         .difference(previousPrayerTime)
         .inSeconds;
-
     if (totalSeconds <= 0) return 1.0;
     return (elapsedSeconds / totalSeconds).clamp(0.001, 1.0);
   }
@@ -123,7 +106,7 @@ class _NextPrayerProgressState extends State<NextPrayerProgress> {
   @override
   Widget build(BuildContext context) {
     final formattedNext =
-        "${nextPrayerTime.hour.toString().padLeft(2, '0')}:${nextPrayerTime.minute.toString().padLeft(2, '0')}";
+        widget.day.prayerTimesCleanForDisplay[nextPrayer.name] ?? '00:00 ص';
 
     return Stack(
       alignment: Alignment.center,
@@ -146,7 +129,6 @@ class _NextPrayerProgressState extends State<NextPrayerProgress> {
             shape: BoxShape.circle,
             color: AppColors.bottomNavBarBackground,
           ),
-          //padding: const EdgeInsets.all(33),
           child: Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -154,7 +136,7 @@ class _NextPrayerProgressState extends State<NextPrayerProgress> {
                 Column(
                   children: [
                     Text(
-                      nextPrayerName,
+                      nextPrayer.name,
                       style: AppTextStyles.body24W700White.copyWith(
                         fontSize: 26,
                       ),
