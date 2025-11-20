@@ -1,25 +1,29 @@
-import '../../domain/entities/prayer_calendar.dart';
+import 'package:equatable/equatable.dart';
+import 'package:muslim360/features/prayer/data/model/prayer_day.dart';
 
-abstract class PrayerState {
-  const PrayerState();
+abstract class PrayerState extends Equatable {
+  @override
+  List<Object?> get props => [];
 }
 
-class PrayerInitial extends PrayerState {
-  const PrayerInitial();
-}
+class PrayerInitial extends PrayerState {}
 
-class PrayerLoading extends PrayerState {
-  const PrayerLoading();
-}
+class PrayerLoading extends PrayerState {}
 
 class PrayerLoaded extends PrayerState {
-  final PrayerCalendar calendar;
+  final PrayerDay todayPrayer;
 
-  const PrayerLoaded(this.calendar);
+  PrayerLoaded(this.todayPrayer);
+
+  @override
+  List<Object?> get props => [todayPrayer];
 }
 
 class PrayerError extends PrayerState {
   final String message;
 
-  const PrayerError(this.message);
+  PrayerError(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }

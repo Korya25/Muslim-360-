@@ -1,10 +1,14 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:muslim360/core/di/service_locator.dart';
 import 'package:muslim360/core/presentation/view/main_view.dart';
 import 'package:muslim360/core/routing/app_routes.dart';
 import 'package:muslim360/core/routing/app_transitions.dart';
+import 'package:muslim360/core/services/shared_pref.dart';
+import 'package:muslim360/features/prayer/data/datasource/prayer_local_data_source.dart';
+import 'package:muslim360/features/prayer/data/datasource/prayer_remote_data_source.dart';
+import 'package:muslim360/features/prayer/data/repo/prayer_repository.dart';
 import 'package:muslim360/features/prayer/presentation/cubit/prayer_cubit.dart';
 import 'package:muslim360/features/prayer/presentation/views/prayer_view.dart';
 
@@ -33,7 +37,17 @@ class AppRouter {
               context: context,
               state: state,
               child: BlocProvider(
-                create: (context) => locator<PrayerCubit>(),
+                create: (_) => PrayerCubit(
+                  repository: PrayerRepository(
+                    remoteDataSource: PrayerRemoteDataSourceImpl(dio: Dio()),
+                    localDataSource: PrayerLocalDataSourceImpl(
+                      sharedPref: SharedPref(),
+                    ),
+                    sharedPref: SharedPref(),
+                  ),
+                  latitude: 30.0444,
+                  longitude: 31.2357,
+                )..fetchTodayPrayer(),
                 child: PrayerTimesScreen(),
               ),
             ),

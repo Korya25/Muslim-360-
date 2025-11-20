@@ -1,3 +1,3 @@
 class PrefKeys {
-  static const String prayerCalendarCachePrefix = 'prayer_calendar_cache';
+  static const String monthKey = 'cached_prayer_month';
 }

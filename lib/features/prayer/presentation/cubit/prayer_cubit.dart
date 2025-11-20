@@ -1,30 +1,44 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/usecases/get_prayer_calendar.dart';
+import 'package:muslim360/features/prayer/data/repo/prayer_repository.dart';
 import 'prayer_state.dart';
 
 class PrayerCubit extends Cubit<PrayerState> {
-  final GetPrayerCalendar getPrayerCalendar;
+  final PrayerRepository repository;
+  final double latitude;
+  final double longitude;
 
-  PrayerCubit({required this.getPrayerCalendar}) : super(const PrayerInitial());
+  PrayerCubit({
+    required this.repository,
+    required this.latitude,
+    required this.longitude,
+  }) : super(PrayerInitial());
 
-  Future<void> loadPrayerCalendar({
-    required int year,
-    required int month,
-    required double latitude,
-    required double longitude,
-  }) async {
-    emit(const PrayerLoading());
+  /// Fetch today prayer from local or remote
+  Future<void> fetchTodayPrayer() async {
+    emit(PrayerLoading());
 
-    final result = await getPrayerCalendar(
-      year: year,
-      month: month,
+    final result = await repository.getTodayPrayer(
       latitude: latitude,
       longitude: longitude,
     );
 
     result.fold(
       (failure) => emit(PrayerError(failure.message)),
-      (calendar) => emit(PrayerLoaded(calendar)),
+      (todayPrayer) => emit(PrayerLoaded(todayPrayer)),
     );
+  }
+
+  /// Refresh all data (reload month + next month)
+  Future<void> refreshData() async {
+    emit(PrayerLoading());
+
+    try {
+      await repository.refreshAll(latitude: latitude, longitude: longitude);
+
+      // fetch today's after refresh
+      await fetchTodayPrayer();
+    } catch (e) {
+      emit(PrayerError(e.toString()));
+    }
   }
 }
