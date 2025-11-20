@@ -1,5 +1,6 @@
 // prayer_time_item.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:muslim360/core/theme/fonts/app_text_styles.dart';
 import 'package:muslim360/core/theme/style/app_colors.dart';
@@ -30,8 +31,17 @@ class _PrayerTimeItemState extends State<PrayerTimeItem> {
     _isExpanded = widget.isActive;
   }
 
+  @override
+  void didUpdateWidget(covariant PrayerTimeItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isActive != oldWidget.isActive) {
+      setState(() => _isExpanded = widget.isActive);
+    }
+  }
+
   void _toggleExpand() {
     setState(() => _isExpanded = !_isExpanded);
+    HapticFeedback.mediumImpact();
   }
 
   @override
@@ -40,72 +50,66 @@ class _PrayerTimeItemState extends State<PrayerTimeItem> {
     final isActive = widget.isActive;
     final hasSunnah = prayer.sunnah != null && prayer.sunnah!.isNotEmpty;
 
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 45,
-                width: 45,
-                child: Lottie.asset(prayer.iconPath, fit: BoxFit.contain),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                prayer.name,
-                style: isActive
-                    ? AppTextStyles.cairo16W700Primary
-                    : AppTextStyles.cairo16W600White,
-              ),
-              const SizedBox(width: 12),
-              if (hasSunnah)
-                GestureDetector(
-                  onTap: _toggleExpand,
-                  child: Icon(
+    return GestureDetector(
+      onTap: _toggleExpand,
+
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 6),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 48,
+                  width: 48,
+                  child: Lottie.asset(prayer.iconPath, fit: BoxFit.contain),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  prayer.name,
+                  style: isActive
+                      ? AppTextStyles.cairo16W700Primary
+                      : AppTextStyles.cairo16W600White,
+                ),
+                const SizedBox(width: 12),
+                if (hasSunnah)
+                  Icon(
                     _isExpanded ? Icons.expand_less : Icons.expand_more,
                     color: isActive
                         ? AppColors.primaryGreen
                         : AppColors.textWhite.withOpacity(0.7),
                     size: 20,
                   ),
+                const Spacer(),
+                Text(
+                  widget.prayerTime,
+                  style: isActive
+                      ? AppTextStyles.amiri15W900Primary
+                      : AppTextStyles.amiri15W700White,
                 ),
-              const Spacer(),
-              Text(
-                widget.prayerTime,
-                style: isActive
-                    ? AppTextStyles.amiri15W900Primary
-                    : AppTextStyles.amiri15W700White,
-              ),
-            ],
-          ),
-        ),
-        if (_isExpanded && hasSunnah)
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 24,
-              right: 60,
-              bottom: 12,
-              top: 0,
+              ],
             ),
-            child: Container(
-              width: double.infinity,
+          ),
+          if (_isExpanded && hasSunnah)
+            Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(8),
                 border: Border.all(
-                  color: AppColors.secondaryBackground,
+                  color: AppColors.textPrimary.withAlpha(150),
                   width: 1,
                 ),
               ),
               child: Text(
                 prayer.sunnah!,
-                style: AppTextStyles.cairo12W600Primary,
+                style: AppTextStyles.cairo12W600Primary.copyWith(
+                  color: AppColors.textGrey,
+                ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }

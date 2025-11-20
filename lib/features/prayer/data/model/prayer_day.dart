@@ -167,21 +167,120 @@ class PrayerDay {
     return months[monthNumber];
   }
 
-  String get nextPrayerName {
+  // حساب الصلاة القادمة والأوقات المتعلقة بها
+  Prayer get nextPrayer {
     final now = DateTime.now();
+    final prayers = this.prayers;
 
-    final times = prayerTimesClean.entries.map((entry) {
-      final parts = entry.value.split(":");
-      final hour = int.parse(parts[0]);
-      final minute = int.parse(parts[1]);
-      final dt = DateTime(now.year, now.month, now.day, hour, minute);
-      return MapEntry(entry.key, dt);
-    }).toList()..sort((a, b) => a.value.compareTo(b.value));
+    for (var prayer in prayers) {
+      final timeStr = prayerTimesClean[prayer.name] ?? '00:00';
+      final parts = timeStr.split(":");
+      if (parts.length < 2) continue;
 
-    for (var entry in times) {
-      if (entry.value.isAfter(now)) return entry.key;
+      final time = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        int.parse(parts[0]),
+        int.parse(parts[1]),
+      );
+
+      if (time.isAfter(now)) {
+        return prayer;
+      }
     }
 
-    return "الفجر";
+    return prayers.firstWhere(
+      (p) => p.name == 'الفجر',
+      orElse: () => prayers.first,
+    );
+  }
+
+  DateTime get nextPrayerDateTime {
+    final now = DateTime.now();
+    final timeStr = prayerTimesClean[nextPrayer.name] ?? '00:00';
+    final parts = timeStr.split(":");
+
+    if (parts.length < 2) {
+      return now.add(const Duration(hours: 1));
+    }
+
+    var time = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      int.parse(parts[0]),
+      int.parse(parts[1]),
+    );
+
+    // إذا كان الوقت في الماضي، أضفنا يوم (للفجر)
+    if (time.isBefore(now)) {
+      time = time.add(const Duration(days: 1));
+    }
+
+    return time;
+  }
+
+  // الحصول على وقت الصلاة السابقة كـ DateTime
+  DateTime get previousPrayerDateTime {
+    final now = DateTime.now();
+    final prayers = this.prayers;
+    DateTime? prev;
+
+    for (var prayer in prayers) {
+      final timeStr = prayerTimesClean[prayer.name] ?? '00:00';
+      final parts = timeStr.split(":");
+      if (parts.length < 2) continue;
+
+      final time = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        int.parse(parts[0]),
+        int.parse(parts[1]),
+      );
+
+      if (time.isBefore(now)) {
+        prev = time;
+      }
+    }
+
+    // إذا لم توجد صلاة سابقة اليوم، العشاء من الأمس
+    if (prev == null) {
+      final ishaTime = prayerTimesClean['العشاء'] ?? '00:00';
+      final parts = ishaTime.split(":");
+      prev = DateTime(
+        now.year,
+        now.month,
+        now.day - 1,
+        int.parse(parts[0]),
+        int.parse(parts[1]),
+      );
+    }
+
+    return prev;
+  }
+
+  // الحصول على الوقت المتبقي حتى الصلاة القادمة
+  Duration get remainingDurationToNextPrayer {
+    return nextPrayerDateTime.difference(DateTime.now());
+  }
+
+  // الحصول على الوقت المتبقي كـ String (HH:MM:SS)
+  String get remainingTimeFormatted {
+    final diff = remainingDurationToNextPrayer;
+    return "${diff.inHours.toString().padLeft(2, '0')}:${(diff.inMinutes % 60).toString().padLeft(2, '0')}:${(diff.inSeconds % 60).toString().padLeft(2, '0')}";
+  }
+
+  double get progressToNextPrayer {
+    final totalSeconds = nextPrayerDateTime
+        .difference(previousPrayerDateTime)
+        .inSeconds;
+    final elapsedSeconds = DateTime.now()
+        .difference(previousPrayerDateTime)
+        .inSeconds;
+
+    if (totalSeconds <= 0) return 1.0;
+    return (elapsedSeconds / totalSeconds).clamp(0.001, 1.0);
   }
 }

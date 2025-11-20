@@ -11,13 +11,14 @@ class PrayerTimesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final prayers = day.prayers;
-    final nextPrayerName = day.nextPrayerName;
+    final nextPrayerName = day.nextPrayer.name;
 
     return Column(
       children: prayers.map((prayer) {
         return PrayerTimeItem(
           prayer: prayer,
           prayerTime: day.prayerTimesCleanForDisplay[prayer.name] ?? '',
+          // ignore: unrelated_type_equality_checks
           isActive: prayer.name == nextPrayerName,
         );
       }).toList(),

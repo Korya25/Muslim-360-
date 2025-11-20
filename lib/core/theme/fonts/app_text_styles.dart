@@ -62,10 +62,10 @@ class AppTextStyles {
   // Styles قديمة (لا تُحذف)
   // ---------------------------------------
 
-  static final TextStyle head30W700Primary = headlineLarge.copyWith(
+  static final TextStyle head24W700Primary = headlineLarge.copyWith(
     fontWeight: FontWeight.w700,
     color: AppColors.textPrimary,
-    fontSize: 30,
+    fontSize: 24,
     height: 0.7,
   );
 
@@ -82,10 +82,9 @@ class AppTextStyles {
     color: AppColors.textWhite.withAlpha(180),
   );
 
-  static final TextStyle body24W700White = body.copyWith(
-    fontSize: 24,
+  static final TextStyle body22W700White = body.copyWith(
+    fontSize: 22,
     fontWeight: FontWeight.w700,
-    height: 0.7,
     color: AppColors.textWhite,
   );
 
