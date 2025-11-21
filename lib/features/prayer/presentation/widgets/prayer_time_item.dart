@@ -56,13 +56,13 @@ class _PrayerTimeItemState extends State<PrayerTimeItem> {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 52, vertical: 8),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: 48,
-                  width: 48,
+                  height: 45,
+                  width: 45,
                   child: Lottie.asset(prayer.iconPath, fit: BoxFit.contain),
                 ),
                 const SizedBox(width: 12),
@@ -93,7 +93,8 @@ class _PrayerTimeItemState extends State<PrayerTimeItem> {
           ),
           if (_isExpanded && hasSunnah)
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              margin: EdgeInsets.symmetric(horizontal: 42),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
@@ -101,11 +102,22 @@ class _PrayerTimeItemState extends State<PrayerTimeItem> {
                   width: 1,
                 ),
               ),
-              child: Text(
-                prayer.sunnah!,
-                style: AppTextStyles.cairo12W600Primary.copyWith(
-                  color: AppColors.textGrey,
-                ),
+              child: Row(
+                spacing: 4,
+                children: [
+                  Text(
+                    'صلاة السنة:',
+                    style: AppTextStyles.cairo12W600Primary.copyWith(
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  Text(
+                    prayer.sunnah!,
+                    style: AppTextStyles.cairo12W600Primary.copyWith(
+                      color: AppColors.textGrey,
+                    ),
+                  ),
+                ],
               ),
             ),
         ],

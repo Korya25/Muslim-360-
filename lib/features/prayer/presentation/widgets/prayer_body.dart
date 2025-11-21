@@ -4,6 +4,9 @@ import 'package:muslim360/features/prayer/presentation/cubit/prayer_cubit.dart';
 import 'package:muslim360/features/prayer/presentation/cubit/prayer_state.dart';
 import 'package:muslim360/features/prayer/presentation/widgets/hijri_gregorian_date.dart';
 import 'package:muslim360/features/prayer/presentation/widgets/next_prayer_progress.dart';
+import 'package:muslim360/features/prayer/presentation/widgets/prayer_empty_widget.dart';
+import 'package:muslim360/features/prayer/presentation/widgets/prayer_error_widget.dart';
+import 'package:muslim360/features/prayer/presentation/widgets/prayer_loading_skeleton.dart';
 import 'package:muslim360/features/prayer/presentation/widgets/prayer_times_list.dart';
 
 class PrayerBody extends StatelessWidget {
@@ -14,36 +17,37 @@ class PrayerBody extends StatelessWidget {
     return BlocBuilder<PrayerCubit, PrayerState>(
       builder: (context, state) {
         if (state is PrayerLoading) {
-          return SizedBox(
-            height: 300,
-            child: Center(child: CircularProgressIndicator()),
+          return const PrayerLoadingSkeleton();
+        }
+
+        if (state is PrayerError) {
+          return PrayerErrorWidget(
+            onRetry: () => context.read<PrayerCubit>().fetchTodayPrayer(),
           );
-        } else if (state is PrayerLoaded) {
-          final todayPrayer = state.todayPrayer;
+        }
+
+        if (state is PrayerLoaded) {
+          final today = state.todayPrayer;
+
+          if (today.prayerTimesClean.isEmpty) {
+            return const PrayerEmptyWidget();
+          }
+
           return Column(
             children: [
               const SizedBox(height: 5),
-              Center(
-                child: HijriGregorianDate(
-                  hijri: todayPrayer.hijriFormatted,
-                  gregorian: todayPrayer.gregorianFormatted,
-                ),
+              HijriGregorianDate(
+                hijri: today.hijriFormatted,
+                gregorian: today.gregorianFormatted,
               ),
               const SizedBox(height: 16),
-              Center(child: NextPrayerProgress(day: todayPrayer)),
-              PrayerTimesList(day: todayPrayer),
+              NextPrayerProgress(day: today),
+              PrayerTimesList(day: today),
             ],
           );
-        } else if (state is PrayerError) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text('تحقق من الاتصال بالانترنت'),
-            ),
-          );
-        } else {
-          return const SizedBox.shrink();
         }
+
+        return const SizedBox.shrink();
       },
     );
   }
