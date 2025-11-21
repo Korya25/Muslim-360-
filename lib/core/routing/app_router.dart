@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:muslim360/core/di/service_locator.dart';
 import 'package:muslim360/core/presentation/view/main_view.dart';
 import 'package:muslim360/core/routing/app_routes.dart';
 import 'package:muslim360/core/routing/app_transitions.dart';
@@ -38,16 +39,11 @@ class AppRouter {
               state: state,
               child: BlocProvider(
                 create: (_) => PrayerCubit(
-                  repository: PrayerRepository(
-                    remoteDataSource: PrayerRemoteDataSourceImpl(dio: Dio()),
-                    localDataSource: PrayerLocalDataSourceImpl(
-                      sharedPref: SharedPref(),
-                    ),
-                    sharedPref: SharedPref(),
-                  ),
+                  repository: sl<PrayerRepository>(),
                   latitude: 30.0444,
                   longitude: 31.2357,
                 )..fetchTodayPrayer(),
+
                 child: PrayerTimesScreen(),
               ),
             ),
