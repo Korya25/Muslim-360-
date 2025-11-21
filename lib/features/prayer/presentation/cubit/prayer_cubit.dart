@@ -12,27 +12,34 @@ class PrayerCubit extends Cubit<PrayerState> {
     init();
   }
 
-  /// Public init method
   Future<void> init() async {
-    emit(PrayerLoading());
+    try {
+      final cachedPrayer = await repository.getTodayPrayerFromCache();
+      if (cachedPrayer != null) {
+        emit(PrayerLoaded(cachedPrayer));
+        return;
+      }
 
-    final position = await locationService.getCurrentLocation(
-      onError: (err) {
-        // هنا ممكن تظهر رسالة snackbar قبل الخروج من التطبيق
-        print('Location error: $err');
-      },
-    );
+      emit(PrayerLoading());
 
-    if (position == null) {
-      // لو المستخدم رفض الإذن، يمكن هنا إنهاء التطبيق أو إظهار رسالة
-      emit(PrayerError('الموقع غير متاح'));
-      return;
+      final position = await locationService.getCurrentLocation(
+        onError: (err) {
+          print('Location error: $err');
+        },
+      );
+
+      if (position == null) {
+        emit(PrayerError('الموقع غير متاح'));
+        return;
+      }
+
+      await fetchTodayPrayer(
+        latitude: position.latitude,
+        longitude: position.longitude,
+      );
+    } catch (e) {
+      emit(PrayerError(e.toString()));
     }
-
-    await fetchTodayPrayer(
-      latitude: position.latitude,
-      longitude: position.longitude,
-    );
   }
 
   Future<void> fetchTodayPrayer({

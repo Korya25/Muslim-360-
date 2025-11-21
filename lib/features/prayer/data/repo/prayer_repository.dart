@@ -18,6 +18,29 @@ class PrayerRepository {
     required this.localDataSource,
     required this.sharedPref,
   });
+  Future<PrayerDay?> getTodayPrayerFromCache() async {
+    final cachedString = sharedPref.getString(PrefKeys.monthKey);
+    if (cachedString == null) return null;
+
+    final List<dynamic> jsonList = jsonDecode(cachedString);
+    final months = jsonList.map((e) => PrayerMonth.fromJson(e)).toList();
+
+    final today = DateTime.now();
+
+    final monthData = months.firstWhere(
+      (m) => m.days.isNotEmpty && _monthOfDay(m.days[0]) == today.month,
+      orElse: () => PrayerMonth(code: 0, status: 'Empty', days: []),
+    );
+
+    if (monthData.days.isEmpty) return null;
+
+    final day = monthData.days.cast<PrayerDay?>().firstWhere(
+      (d) => _dayOfDate(d!) == today.day,
+      orElse: () => null,
+    );
+
+    return day;
+  }
 
   /// ================================
   /// تحميل شهر من الريموت وحفظه في اللوكال

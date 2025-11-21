@@ -25,15 +25,27 @@ class _SplashViewState extends State<SplashView> {
     });
   }
 
-  /// تدفق التحقق من الموقع والإذن
   Future<void> _handleLocationFlow() async {
+    final prefs = SharedPref().getPreferenceInstance();
+    final latitude = prefs.getDouble(PrefKeys.latitudeKey);
+    final longitude = prefs.getDouble(PrefKeys.longitudeKey);
+
+    // لو الموقع محفوظ مسبقًا
+    if (latitude != null && longitude != null) {
+      if (mounted) context.goNamed(AppRoutes.prayer);
+      return;
+    }
+
+    // التحقق من خدمة الموقع
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
+      // فتح إعدادات الموقع فقط إذا الخدمة غير مفعلة
       await Geolocator.openLocationSettings();
       Future.delayed(const Duration(seconds: 1), _handleLocationFlow);
       return;
     }
 
+    // طلب الإذن بعد التأكد من أن الخدمة مفعلة
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission != LocationPermission.always &&
         permission != LocationPermission.whileInUse) {
