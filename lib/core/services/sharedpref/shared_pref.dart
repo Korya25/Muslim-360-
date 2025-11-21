@@ -40,4 +40,12 @@ class SharedPref {
   String? getString(String key) {
     return sharedPreferences.getString(key);
   }
+
+  /// Set a double value
+  Future<void> setDouble(String key, double value) async {
+    await sharedPreferences.setDouble(key, value);
+  }
+
+  /// Get a double value
+  double? getDouble(String key) => sharedPreferences.getDouble(key);
 }

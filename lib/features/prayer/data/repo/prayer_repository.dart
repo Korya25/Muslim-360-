@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:dartz/dartz.dart';
-import 'package:muslim360/core/services/pref_keys.dart';
-import 'package:muslim360/core/services/shared_pref.dart';
+import 'package:muslim360/core/services/sharedpref/pref_keys.dart';
+import 'package:muslim360/core/services/sharedpref/shared_pref.dart';
 import 'package:muslim360/core/utils/failure.dart';
 import 'package:muslim360/features/prayer/data/datasource/prayer_local_data_source.dart';
 import 'package:muslim360/features/prayer/data/datasource/prayer_remote_data_source.dart';

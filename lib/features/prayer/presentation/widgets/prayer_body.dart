@@ -22,13 +22,18 @@ class PrayerBody extends StatelessWidget {
 
         if (state is PrayerError) {
           return PrayerErrorWidget(
-            onRetry: () => context.read<PrayerCubit>().fetchTodayPrayer(),
+            onRetry: () => context.read<PrayerCubit>().refreshData(),
+          );
+        }
+
+        if (state is PrayerError) {
+          return PrayerErrorWidget(
+            onRetry: () => context.read<PrayerCubit>().refreshData(),
           );
         }
 
         if (state is PrayerLoaded) {
           final today = state.todayPrayer;
-
           if (today.prayerTimesClean.isEmpty) {
             return const PrayerEmptyWidget();
           }

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
-import 'package:muslim360/core/services/shared_pref.dart';
+import 'package:muslim360/core/services/location/location_service.dart';
+import 'package:muslim360/core/services/sharedpref/shared_pref.dart';
 import 'package:muslim360/features/prayer/data/datasource/prayer_local_data_source.dart';
 import 'package:muslim360/features/prayer/data/datasource/prayer_remote_data_source.dart';
 import 'package:muslim360/features/prayer/data/repo/prayer_repository.dart';
@@ -14,6 +15,9 @@ Future<void> setupLocator() async {
   sl.registerLazySingleton<SharedPref>(() => sharedPref);
 
   sl.registerLazySingleton<Dio>(() => Dio());
+
+  // Services
+  sl.registerLazySingleton<LocationService>(() => LocationService());
 
   // Data sources
   sl.registerLazySingleton<PrayerRemoteDataSource>(

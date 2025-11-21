@@ -1,22 +1,46 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:muslim360/features/prayer/data/repo/prayer_repository.dart';
+import 'package:muslim360/core/services/location/location_service.dart';
 import 'prayer_state.dart';
 
 class PrayerCubit extends Cubit<PrayerState> {
   final PrayerRepository repository;
-  final double latitude;
-  final double longitude;
+  final LocationService locationService;
 
-  PrayerCubit({
-    required this.repository,
-    required this.latitude,
-    required this.longitude,
-  }) : super(PrayerInitial());
+  PrayerCubit({required this.repository, required this.locationService})
+    : super(PrayerInitial()) {
+    init();
+  }
 
-  Future<void> fetchTodayPrayer({bool isRefresh = false}) async {
-    if (!isRefresh) {
-      emit(PrayerLoading());
+  /// Public init method
+  Future<void> init() async {
+    emit(PrayerLoading());
+
+    final position = await locationService.getCurrentLocation(
+      onError: (err) {
+        // هنا ممكن تظهر رسالة snackbar قبل الخروج من التطبيق
+        print('Location error: $err');
+      },
+    );
+
+    if (position == null) {
+      // لو المستخدم رفض الإذن، يمكن هنا إنهاء التطبيق أو إظهار رسالة
+      emit(PrayerError('الموقع غير متاح'));
+      return;
     }
+
+    await fetchTodayPrayer(
+      latitude: position.latitude,
+      longitude: position.longitude,
+    );
+  }
+
+  Future<void> fetchTodayPrayer({
+    required double latitude,
+    required double longitude,
+    bool isRefresh = false,
+  }) async {
+    if (!isRefresh) emit(PrayerLoading());
 
     final result = await repository.getTodayPrayer(
       latitude: latitude,
@@ -31,9 +55,23 @@ class PrayerCubit extends Cubit<PrayerState> {
 
   Future<void> refreshData() async {
     try {
-      await repository.refreshAll(latitude: latitude, longitude: longitude);
+      // استخدم القيم المخزنة فقط بدون إعادة طلب الموقع
+      final cached = await locationService.getCachedLocation();
+      if (cached == null) {
+        emit(PrayerError('الموقع غير متاح'));
+        return;
+      }
 
-      await fetchTodayPrayer(isRefresh: true);
+      await repository.refreshAll(
+        latitude: cached['latitude']!,
+        longitude: cached['longitude']!,
+      );
+
+      await fetchTodayPrayer(
+        latitude: cached['latitude']!,
+        longitude: cached['longitude']!,
+        isRefresh: true,
+      );
     } catch (e) {
       if (state is PrayerLoaded) return;
       emit(PrayerError(e.toString()));
