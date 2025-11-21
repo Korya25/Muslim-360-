@@ -5,14 +5,24 @@ import 'package:muslim360/core/di/service_locator.dart';
 import 'package:muslim360/core/presentation/view/main_view.dart';
 import 'package:muslim360/core/routing/app_routes.dart';
 import 'package:muslim360/core/routing/app_transitions.dart';
+import 'package:muslim360/features/Splash/presentation/views/splash_view.dart';
 import 'package:muslim360/features/prayer/data/repo/prayer_repository.dart';
 import 'package:muslim360/features/prayer/presentation/cubit/prayer_cubit.dart';
 import 'package:muslim360/features/prayer/presentation/views/prayer_view.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: AppRoutes.prayer,
+    initialLocation: AppRoutes.splash,
     routes: [
+      GoRoute(
+        path: AppRoutes.splash,
+        name: AppRoutes.splash,
+        pageBuilder: (context, state) => AppTransitions.noTransition(
+          context: context,
+          state: state,
+          child: SplashView(),
+        ),
+      ),
       ShellRoute(
         builder: (context, state, child) {
           return MainView(state: state, child: child);
