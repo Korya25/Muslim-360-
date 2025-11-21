@@ -13,9 +13,10 @@ class PrayerCubit extends Cubit<PrayerState> {
     required this.longitude,
   }) : super(PrayerInitial());
 
-  /// Fetch today prayer from local or remote
-  Future<void> fetchTodayPrayer() async {
-    emit(PrayerLoading());
+  Future<void> fetchTodayPrayer({bool isRefresh = false}) async {
+    if (!isRefresh) {
+      emit(PrayerLoading());
+    }
 
     final result = await repository.getTodayPrayer(
       latitude: latitude,
@@ -28,16 +29,13 @@ class PrayerCubit extends Cubit<PrayerState> {
     );
   }
 
-  /// Refresh all data (reload month + next month)
   Future<void> refreshData() async {
-    emit(PrayerLoading());
-
     try {
       await repository.refreshAll(latitude: latitude, longitude: longitude);
 
-      // fetch today's after refresh
-      await fetchTodayPrayer();
+      await fetchTodayPrayer(isRefresh: true);
     } catch (e) {
+      if (state is PrayerLoaded) return;
       emit(PrayerError(e.toString()));
     }
   }

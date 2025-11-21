@@ -39,29 +39,43 @@ class PrayerRepository {
       longitude: longitude,
     );
 
-    return remoteResult.fold((f) => throw f, (monthData) async {
-      // جلب الشهور المخزنة
-      final cachedString = sharedPref.getString(PrefKeys.monthKey);
-      List<PrayerMonth> months = [];
-      if (cachedString != null) {
-        final List<dynamic> jsonList = jsonDecode(cachedString);
-        months = jsonList.map((e) => PrayerMonth.fromJson(e)).toList();
-      }
+    return remoteResult.fold(
+      (failure) {
+        // بدل ما نرمي Exception، نتحقق أولًا من Local Storage
+        final cachedString = sharedPref.getString(PrefKeys.monthKey);
+        if (cachedString != null) {
+          final List<dynamic> jsonList = jsonDecode(cachedString);
+          final months = jsonList.map((e) => PrayerMonth.fromJson(e)).toList();
+          final monthData = months.firstWhere(
+            (m) => m.days.isNotEmpty && _monthOfDay(m.days[0]) == targetMonth,
+            orElse: () => PrayerMonth(code: 0, status: 'Empty', days: []),
+          );
+          if (monthData.days.isNotEmpty) {
+            return monthData;
+          }
+        }
 
-      // إضافة الشهر الجديد
-      months.add(monthData);
+        // إذا لا يوجد، نعيد فشل ServerFailure بدل Exception
+        throw ServerFailure(message: failure.message);
+      },
+      (monthData) async {
+        // تخزين البيانات كما كان
+        final cachedString = sharedPref.getString(PrefKeys.monthKey);
+        List<PrayerMonth> months = [];
+        if (cachedString != null) {
+          final List<dynamic> jsonList = jsonDecode(cachedString);
+          months = jsonList.map((e) => PrayerMonth.fromJson(e)).toList();
+        }
 
-      // الاحتفاظ فقط بآخر شهرين
-      if (months.length > 2) {
-        months = months.sublist(months.length - 2);
-      }
+        months.add(monthData);
+        if (months.length > 2) months = months.sublist(months.length - 2);
 
-      // حفظ كل شيء في الـ local
-      final jsonToSave = jsonEncode(months.map((e) => e.toJson()).toList());
-      await sharedPref.setString(PrefKeys.monthKey, jsonToSave);
+        final jsonToSave = jsonEncode(months.map((e) => e.toJson()).toList());
+        await sharedPref.setString(PrefKeys.monthKey, jsonToSave);
 
-      return monthData;
-    });
+        return monthData;
+      },
+    );
   }
 
   /// ================================
