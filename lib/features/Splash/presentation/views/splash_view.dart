@@ -30,83 +30,58 @@ class _SplashViewState extends State<SplashView> {
     final latitude = prefs.getDouble(PrefKeys.latitudeKey);
     final longitude = prefs.getDouble(PrefKeys.longitudeKey);
 
-    // لو الموقع محفوظ مسبقًا
+    // لو الاحداثيات محفوظة
     if (latitude != null && longitude != null) {
       if (mounted) context.goNamed(AppRoutes.prayer);
       return;
     }
 
-    // التحقق من خدمة الموقع
+    // لو خدمة الموقع غير مفعلة
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      // فتح إعدادات الموقع فقط إذا الخدمة غير مفعلة
       await Geolocator.openLocationSettings();
       Future.delayed(const Duration(seconds: 1), _handleLocationFlow);
       return;
     }
 
-    // طلب الإذن بعد التأكد من أن الخدمة مفعلة
     LocationPermission permission = await Geolocator.checkPermission();
-    if (permission != LocationPermission.always &&
-        permission != LocationPermission.whileInUse) {
-      permission = await Geolocator.requestPermission();
+
+    // رفض دائم → افتح إعدادات التطبيق وليس الخروج
+    if (permission == LocationPermission.deniedForever) {
+      await Geolocator.openAppSettings();
+      Future.delayed(const Duration(seconds: 1), _handleLocationFlow);
+      return;
     }
 
+    // لو مفيش إذن → اطلبه
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      Future.delayed(const Duration(milliseconds: 300), _handleLocationFlow);
+      return;
+    }
+
+    // لو الإذن موجود
     if (permission == LocationPermission.always ||
         permission == LocationPermission.whileInUse) {
-      await _goToPrayer();
-    } else {
-      _showLocationDialog(
-        "يجب تفعيل الإذن للوصول للموقع لتتمكن من استخدام التطبيق",
-      );
+      await _getAndSaveLocation();
+      return;
     }
+
+    Future.delayed(const Duration(seconds: 1), _handleLocationFlow);
   }
 
-  /// الانتقال لصفحة الصلاة وحفظ الموقع
-  Future<void> _goToPrayer() async {
-    try {
-      final position = await _locationService.getCurrentLocation();
-      if (position != null) {
-        final prefs = SharedPref().getPreferenceInstance();
-        await prefs.setDouble(PrefKeys.latitudeKey, position.latitude);
-        await prefs.setDouble(PrefKeys.longitudeKey, position.longitude);
-
-        if (mounted) context.goNamed(AppRoutes.prayer);
-      } else {
-        _showLocationDialog("تعذر الحصول على الموقع الحالي");
-      }
-    } catch (e) {
-      _showLocationDialog(e.toString());
+  Future<void> _getAndSaveLocation() async {
+    final position = await _locationService.getCurrentLocation();
+    if (position == null) {
+      Future.delayed(const Duration(seconds: 1), _handleLocationFlow);
+      return;
     }
-  }
 
-  /// عرض رسالة للمستخدم في حال رفض الإذن أو عدم توفر الموقع
-  void _showLocationDialog(String? message) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => AlertDialog(
-        title: const Text('الموقع مطلوب'),
-        content: Text(
-          message ??
-              'يجب تفعيل خدمة الموقع وإعطاء الإذن لتتمكن من استخدام التطبيق.',
-          textAlign: TextAlign.center,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _handleLocationFlow();
-            },
-            child: const Text('حاول مرة أخرى'),
-          ),
-          TextButton(
-            onPressed: () => SystemNavigator.pop(),
-            child: const Text('اغلاق التطبيق'),
-          ),
-        ],
-      ),
-    );
+    final prefs = SharedPref().getPreferenceInstance();
+    await prefs.setDouble(PrefKeys.latitudeKey, position.latitude);
+    await prefs.setDouble(PrefKeys.longitudeKey, position.longitude);
+
+    if (mounted) context.goNamed(AppRoutes.prayer);
   }
 
   @override
